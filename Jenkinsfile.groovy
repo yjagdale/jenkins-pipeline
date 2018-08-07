@@ -21,7 +21,9 @@ pipeline {
         }
 
         stage('Automation on dev') {
-            AutomationSuiteRunner('Dev')
+            steps {
+                AutomationSuiteRunner('Dev')
+            }
         }
         stage('Deploy application Test') {
             steps {
@@ -30,7 +32,9 @@ pipeline {
         }
 
         stage('Automation on Test') {
-            AutomationSuiteRunner('Test')
+            steps {
+                AutomationSuiteRunner('Test')
+            }
         }
         stage('Deploy application Staging') {
             steps {
@@ -39,7 +43,9 @@ pipeline {
         }
 
         stage('Automation on Staging') {
-            AutomationSuiteRunner('Staging')
+            steps {
+                AutomationSuiteRunner('Staging')
+            }
         }
         stage('Deploy application On Production') {
             steps {
@@ -72,41 +78,39 @@ def runAutomation(String suiteNumber) {
 }
 
 def AutomationSuiteRunner(String environment) {
-    steps {
-        parallel(
-                Suite1: {
-                    runAutomation(environment + "Suite1")
-                },
-                Suite2: {
-                    runAutomation(environment + "Suite2")
-                },
-                Suite3: {
-                    runAutomation(environment + "Suite3")
-                },
-                Suite4: {
-                    runAutomation(environment + "Suite4")
-                },
-                Suite5: {
-                    runAutomation(environment + "Suite5")
-                },
-                Suite6: {
-                    runAutomation(environment + "Suite6")
-                },
-                Suite7: {
-                    runAutomation(environment + "Suite7")
-                },
-                Suite8: {
-                    runAutomation(environment + "Suite8")
-                },
-                Suite9: {
-                    runAutomation(environment + "Suite9")
-                },
-                Suite10: {
-                    runAutomation(environment + "Suite10")
-                },
-                Suite11: {
-                    runAutomation(environment + "Suite11")
-                }
-        )
-    }
+    parallel(
+            Suite1: {
+                runAutomation(environment + "Suite1")
+            },
+            Suite2: {
+                runAutomation(environment + "Suite2")
+            },
+            Suite3: {
+                runAutomation(environment + "Suite3")
+            },
+            Suite4: {
+                runAutomation(environment + "Suite4")
+            },
+            Suite5: {
+                runAutomation(environment + "Suite5")
+            },
+            Suite6: {
+                runAutomation(environment + "Suite6")
+            },
+            Suite7: {
+                runAutomation(environment + "Suite7")
+            },
+            Suite8: {
+                runAutomation(environment + "Suite8")
+            },
+            Suite9: {
+                runAutomation(environment + "Suite9")
+            },
+            Suite10: {
+                runAutomation(environment + "Suite10")
+            },
+            Suite11: {
+                runAutomation(environment + "Suite11")
+            }
+    )
 }
