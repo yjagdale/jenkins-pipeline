@@ -53,6 +53,26 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+            script {
+                echo "always"
+            }
+        }
+        success {
+            sendEmail("Successful")
+        }
+        unstable {
+            sendEmail("Unstable")
+        }
+        failure {
+            sendEmail("Failed")
+        }
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+        timeout(time: 25, unit: 'MINUTES')
+    }
 }
 
 def BuildApplication(boolean withTest) {
