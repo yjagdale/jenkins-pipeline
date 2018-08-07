@@ -8,46 +8,46 @@ pipeline {
     }
 
     stages {
-        stage('Build Application') {
+        stage('Build') {
             steps {
                 BuildApplication(true);
             }
         }
 
-        stage('Deploy application on Dev') {
+        stage('Dev Deployment') {
             steps {
                 deployApplication('Dev')
             }
         }
 
-        stage('Automation on dev') {
+        stage('Automation:- Dev') {
             steps {
                 AutomationSuiteRunner('Dev')
             }
         }
-        stage('Deploy application Test') {
+        stage('Test Deployment') {
             steps {
                 deployApplication('Test')
             }
         }
 
-        stage('Automation on Test') {
+        stage('Automation:- Test') {
             steps {
                 AutomationSuiteRunner('Test')
             }
         }
-        stage('Deploy application Staging') {
+        stage('Stage Deployment') {
             steps {
                 deployApplication('Staging')
             }
         }
 
-        stage('Automation on Staging') {
+        stage('Automation:- Stage') {
             steps {
                 AutomationSuiteRunner('Staging')
             }
         }
-        stage('Deploy application On Production') {
+        stage('Prod Deployment') {
             steps {
                 deployApplication('Production')
             }
@@ -133,4 +133,11 @@ def AutomationSuiteRunner(String environment) {
                 runAutomation(environment + "Suite11")
             }
     )
+}
+def sendEmail(status) {
+    /*  mail(
+              to: "$EMAIL_RECIPIENTS",
+              subject: "Build $BUILD_NUMBER - " + status + " (${currentBuild.fullDisplayName})",
+              body: "Changes:\n " + getChangeString() + "\n\n Check console output at: $BUILD_URL/console" + "\n")*/
+    echo status
 }
