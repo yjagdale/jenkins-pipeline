@@ -1,6 +1,5 @@
 pipeline {
     agent any
-    mvnHome = tool 'Maven 3.3.9'
     environment {
         EMAIL_RECIPIENTS = 'jagdale0210@gmail.com'
     }
@@ -99,6 +98,7 @@ def BuildApplication(boolean withTest) {
 }
 
 def BuildApplicationWindows(boolean withTest) {
+    def mvnHome = tool 'Maven 3.3.9'
     bat(/"${mvnHome}\bin\mvn" -Dintegration-tests.skip=true clean package/)
     def pom = readMavenPom file: 'pom.xml'
     print pom.version
@@ -107,6 +107,7 @@ def BuildApplicationWindows(boolean withTest) {
 }
 
 def BuildApplicationUnix(boolean withTest) {
+    def mvnHome = tool 'Maven 3.3.9'
     def targetVersion = getDevVersion()
     echo "target build version..."
     print targetVersion
