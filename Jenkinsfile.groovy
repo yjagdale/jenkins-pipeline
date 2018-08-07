@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     environment {
@@ -11,9 +10,7 @@ pipeline {
     stages {
         stage('Build Application') {
             steps {
-                stage {
-                    BuildApplication(true);
-                }
+                BuildApplication(true);
             }
         }
 
