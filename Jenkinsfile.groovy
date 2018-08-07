@@ -184,11 +184,6 @@ def sendEmail(String status) {
 
 def prepareExecution(String dirName, String gitUrl) {
     script {
-        echo "Creating directory ", dirName
-        sh 'mkdir ', dirName, '; pwd'
-        dir(dirName) {
-            git(url: gitUrl, branch: 'master', [credentialsId:'GIT'])
-        }
-        sh 'cd ', dirName
+       echo dirName + gitUrl
     }
 }
