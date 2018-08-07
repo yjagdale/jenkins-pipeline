@@ -1,5 +1,6 @@
 pipeline {
     agent any
+    mvnHome = tool 'Maven 3.3.9'
     environment {
         EMAIL_RECIPIENTS = 'jagdale0210@gmail.com'
     }
@@ -8,6 +9,11 @@ pipeline {
     }
 
     stages {
+        stage('Prepration') {
+            steps {
+                prepareExecution("APP_CODE", "https://github.com/yjagdale/springboot.git")
+            }
+        }
         stage('Build') {
             steps {
                 BuildApplication(true);
@@ -17,6 +23,11 @@ pipeline {
         stage('Dev Deployment') {
             steps {
                 deployApplication('Dev')
+            }
+        }
+        stage ('Prepare testing env') {
+            steps {
+                prepareExecution("QA", "https://yjagdale@bitbucket.org/yjagdale/loom-automation.git")
             }
         }
 
@@ -77,8 +88,35 @@ pipeline {
 
 def BuildApplication(boolean withTest) {
     script {
+        if (isUnix()) {
+            BuildApplicationUnix(withTest)
+        } else {
+            BuildApplicationWindows(withTest);
+        }
         sh "echo 'Running application build with" + withTest + "'"
         sh "sleep 10"
+    }
+}
+
+def BuildApplicationWindows(boolean withTest) {
+    bat(/"${mvnHome}\bin\mvn" -Dintegration-tests.skip=true clean package/)
+    def pom = readMavenPom file: 'pom.xml'
+    print pom.version
+    junit '**//*target/surefire-reports/TEST-*.xml'
+    archive 'target*//*.jar'
+}
+
+def BuildApplicationUnix(boolean withTest) {
+    def targetVersion = getDevVersion()
+    echo "target build version..."
+    print targetVersion
+    sh "'${mvnHome}/bin/mvn' -DskiptTest=", withTest, " -Dbuild.number = ${ targetVersion } clean package "
+    def pom = readMavenPom file: 'pom.xml'
+    developmentArtifactVersion = "${pom.version}-${targetVersion}"
+    echo pom.version
+    if(withTest) {
+        junit '**//*target/surefire-reports/TEST-*.xml'
+        archiveArtifacts 'target*//*.jar'
     }
 }
 
@@ -134,10 +172,22 @@ def AutomationSuiteRunner(String environment) {
             }
     )
 }
-def sendEmail(status) {
-    mail(
-              to: "jagdale0210@gmail.com",
-              subject: "Build $BUILD_NUMBER - " + status + " (${currentBuild.fullDisplayName})",
-              body: "Changes:\n " + getChangeString() + "\n\n Check console output at: $BUILD_URL/console" + "\n")
+
+def sendEmail(String status) {
+//    mail(
+//            to: "jagdale0210@gmail.com",
+//            subject: "Build $BUILD_NUMBER - " + status + " (${currentBuild.fullDisplayName})",
+//            body: "Changes:\n " + getChangeString() + "\n\n Check console output at: $BUILD_URL/console" + "\n")
     echo status
+}
+
+def prepareExecution(String dirName, String gitUrl) {
+    script {
+        echo "Creating directory ", dirName
+        sh 'mkdir ', dirName, '; pwd'
+        dir(dirName) {
+            git(url: gitUrl, branch: 'master', [credentialsId:'GIT'])
+        }
+        sh 'cd ', dirName
+    }
 }
