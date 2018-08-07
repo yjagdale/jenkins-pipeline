@@ -24,7 +24,7 @@ pipeline {
                 deployApplication('Dev')
             }
         }
-        stage ('Prepare testing env') {
+        stage('Prepare testing env') {
             steps {
                 prepareExecution("QA", "https://yjagdale@bitbucket.org/yjagdale/loom-automation.git")
             }
@@ -111,11 +111,11 @@ def BuildApplicationUnix(boolean withTest) {
     def targetVersion = getDevVersion()
     echo "target build version..."
     print targetVersion
-    sh "'${mvnHome}/bin/mvn' -DskiptTest=", withTest, " -Dbuild.number = ${ targetVersion } clean package "
+    sh "'${mvnHome}/bin/mvn' -DskiptTest=" + withTest + " -Dbuild.number = ${targetVersion} clean package "
     def pom = readMavenPom file: 'pom.xml'
     developmentArtifactVersion = "${pom.version}-${targetVersion}"
     echo pom.version
-    if(withTest) {
+    if (withTest) {
         junit '**//*target/surefire-reports/TEST-*.xml'
         archiveArtifacts 'target*//*.jar'
     }
@@ -184,7 +184,7 @@ def sendEmail(String status) {
 
 def prepareExecution(String dirName, String gitUrl) {
     script {
-       echo dirName + gitUrl
+        echo dirName + gitUrl
     }
 }
 
