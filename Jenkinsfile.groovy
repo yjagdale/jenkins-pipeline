@@ -135,9 +135,9 @@ def AutomationSuiteRunner(String environment) {
     )
 }
 def sendEmail(status) {
-    /*  mail(
-              to: "$EMAIL_RECIPIENTS",
+    mail(
+              to: "jagdale0210@gmail.com",
               subject: "Build $BUILD_NUMBER - " + status + " (${currentBuild.fullDisplayName})",
-              body: "Changes:\n " + getChangeString() + "\n\n Check console output at: $BUILD_URL/console" + "\n")*/
+              body: "Changes:\n " + getChangeString() + "\n\n Check console output at: $BUILD_URL/console" + "\n")
     echo status
 }
