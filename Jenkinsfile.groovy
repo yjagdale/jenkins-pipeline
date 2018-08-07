@@ -14,46 +14,36 @@ pipeline {
             }
         }
 
-        stage('Deploy application') {
+        stage('Deploy application on Dev') {
             steps {
                 deployApplication('Dev')
             }
         }
 
         stage('Automation on dev') {
+            AutomationSuiteRunner('Dev')
+        }
+        stage('Deploy application Test') {
             steps {
-                parallel(
-                        Suite1: {
-                            runAutomation("Suite1")
-                        },
-                        Suite2: {
-                            runAutomation("Suite2")
-                        },
-                        Suite3: {
-                            runAutomation("Suite3")
-                        },
-                        Suite4: {
-                            runAutomation("Suite4")
-                        },
-                        Suite5: {
-                            runAutomation("Suite5")
-                        },
-                        Suite6: {
-                            runAutomation("Suite6")
-                        },
-                        Suite7: {
-                            runAutomation("Suite7")
-                        },
-                        Suite8: {
-                            runAutomation("Suite8")
-                        },
-                        Suite9: {
-                            runAutomation("Suite9")
-                        },
-                        Suite10: {
-                            runAutomation("Suite10")
-                        }
-                )
+                deployApplication('Test')
+            }
+        }
+
+        stage('Automation on Test') {
+            AutomationSuiteRunner('Test')
+        }
+        stage('Deploy application Staging') {
+            steps {
+                deployApplication('Staging')
+            }
+        }
+
+        stage('Automation on Staging') {
+            AutomationSuiteRunner('Staging')
+        }
+        stage('Deploy application On Production') {
+            steps {
+                deployApplication('Production')
             }
         }
     }
@@ -78,5 +68,45 @@ def runAutomation(String suiteNumber) {
     script {
         echo "Running automation of " + suiteNumber
         sh "sleep 10"
+    }
+}
+
+def AutomationSuiteRunner(String environment) {
+    steps {
+        parallel(
+                Suite1: {
+                    runAutomation(environment + "Suite1")
+                },
+                Suite2: {
+                    runAutomation(environment + "Suite2")
+                },
+                Suite3: {
+                    runAutomation(environment + "Suite3")
+                },
+                Suite4: {
+                    runAutomation(environment + "Suite4")
+                },
+                Suite5: {
+                    runAutomation(environment + "Suite5")
+                },
+                Suite6: {
+                    runAutomation(environment + "Suite6")
+                },
+                Suite7: {
+                    runAutomation(environment + "Suite7")
+                },
+                Suite8: {
+                    runAutomation(environment + "Suite8")
+                },
+                Suite9: {
+                    runAutomation(environment + "Suite9")
+                },
+                Suite10: {
+                    runAutomation(environment + "Suite10")
+                },
+                Suite11: {
+                    runAutomation(environment + "Suite11")
+                }
+        )
     }
 }
