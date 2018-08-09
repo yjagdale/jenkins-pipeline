@@ -88,7 +88,7 @@ pipeline {
 def BuildApplication(boolean withTest) {
     script {
         if (isUnix()) {
-            BuildApplicationUnix(withTest)
+            BuildApplicationUnixTemp(withTest)
         } else {
             BuildApplicationWindows(withTest);
         }
@@ -104,6 +104,11 @@ def BuildApplicationWindows(boolean withTest) {
     print pom.version
     junit '**//*target/surefire-reports/TEST-*.xml'
     archive 'target*//*.jar'
+}
+
+def BuildApplicationUnixTemp(boolean withTest) {
+    echo "Building application"
+    sh "sleep 10"
 }
 
 def BuildApplicationUnix(boolean withTest) {
